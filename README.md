@@ -4,11 +4,17 @@ terminal tetris for cool hackermen like myself
 
 controls:
 ',' to move left
+
 '.' to accelerate down
+
 '/' to right
+
 'x' to rotate clockwise
+
 'z' to rotate counterclockwise
+
 spacebar to hard drop
+
 'p' to pause or unpause
 
 Uses the NES rotation system
