@@ -9,6 +9,7 @@ controls:
 'x' to rotate clockwise
 'z' to rotate counterclockwise
 spacebar to hard drop
+'p' to pause or unpause
 
 Uses the NES rotation system
 https://strategywiki.org/wiki/Tetris/Rotation_systems
