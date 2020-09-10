@@ -2,7 +2,7 @@
 terminal tetris for cool hackermen like myself
 
 
-controls:
+## controls:
 ',' to move left
 
 '.' to accelerate down
