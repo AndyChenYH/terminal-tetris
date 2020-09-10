@@ -3,7 +3,7 @@
 #include <ncurses.h>
 using namespace std; 
 
-const int MR = 40, MC = 4, MB = 7, dropi = 0, dropj = 0;
+const int MR = 22, MC = 10, MB = 7, dropi = 0, dropj = 3;
 bool mb[MR][MC], screen[MR][MC + 20];
 // list of rotation of pieces
 vector<vector<vector<int>>> bks[MB];
