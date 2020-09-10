@@ -13,5 +13,10 @@ spacebar to hard drop
 Uses the NES rotation system
 https://strategywiki.org/wiki/Tetris/Rotation_systems
 
+# how to run:
 
+make sure you have ncurses installed
 
+compile with:
+
+g++ -std=c++17 -lncurses tetris.cpp
