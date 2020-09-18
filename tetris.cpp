@@ -311,14 +311,17 @@ int main() {
 	noecho();
 	nodelay(stdscr, TRUE);
 	keypad(stdscr, TRUE);
-			
-			
+	start_color();
+	init_pair(1, COLOR_RED, COLOR_BLACK);
 	while (true) {
 		usleep(1000);
 		memset(screen, ' ', sizeof(screen));
+		attron(COLOR_PAIR(1));
 		for (Player &p : ps) {
 			p.draw();
 		}
+		attoff(COLOR_PAIR(1));
+
 		for (int i = 0; i < MR; i ++) {
 			for (int j = 0; j < MC; j ++) {
 				if (mb[i][j]) screen[offi + i][offj + j * 2] = '#';
