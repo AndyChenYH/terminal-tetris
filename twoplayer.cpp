@@ -3,7 +3,7 @@
 #include <ncurses.h>
 using namespace std; 
 
-const int MR = 22, MC = 30, MB = 7, MP = 2, hei = 30, wid = 80, offi = 1, offj = 1;
+const int MR = 22, MC = 30, MB = 7, MP = 1, hei = 30, wid = 80, offi = 1, offj = 1;
 int frame, pt;
 bool mb[MR][MC], paused;
 char screen[hei][wid];
@@ -284,8 +284,8 @@ int main() {
 	pt = 0;
 	paused = false;
 	ps = vector<Player>(MP);
-	ps[0] = Player(0, 8, 'k', ';', 'l', 's', 'a', 'd', 23, 18);
-	ps[1] = Player(0, 20, ',', '/', '.', 'x', 'z', ' ', 23, 40);
+	ps[0] = Player(0, 14, ',', '/', '.', 'x', 'z', ' ', 23, 28);
+//	ps[1] = Player(0, 8, 'k', ';', 'l', 's', 'a', 'd', 23, 18);
 	puts("Instructions:");
 	int pc = 1;
 	for (Player p : ps) {
@@ -346,4 +346,5 @@ int main() {
 	}
 	return 0;
 }
+
 

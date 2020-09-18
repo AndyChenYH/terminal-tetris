@@ -3,7 +3,7 @@
 #include <ncurses.h>
 using namespace std; 
 
-const int MR = 22, MC = 10, MB = 7, MP = 2, hei = 30, wid = 40, offi = 1, offj = 1;
+const int MR = 22, MC = 10, MB = 7, MP = 1, hei = 30, wid = 80, offi = 1, offj = 1;
 int frame, pt;
 bool mb[MR][MC], paused;
 char screen[hei][wid];
@@ -156,13 +156,14 @@ void clear(int li) {
 }
 class Player {
 	public:
-	int ci, cj, cb, cr, next, dropi = 0, dropj = 3;
+	int ci, cj, cb, cr, next, dropi = 0, dropj = 3, drawi, drawj;
 	char bleft, bright, bdown, brotl, brotr, bdrop;
 	Player() {}
-	Player(int dropi, int dropj, int bleft, int bright, int bdown, int brotr, int brotl, int bdrop) {
+	Player(int dropi, int dropj, int bleft, int bright, int bdown, int brotr, int brotl, int bdrop, int drawi, int drawj) {
 		this->dropi = dropi, this->dropj = dropj;
 		this->bleft = bleft, this->bright = bright, this->bdown = bdown;
 		this->brotl = brotl, this->brotr = brotr, this->bdrop = bdrop;
+		this->drawi = drawi, this->drawj = drawj;
 		ci = dropi, cj = dropj, cb = rand() % MB, cr = 0;
 		next = rand() % MB;
 	}
@@ -178,11 +179,11 @@ class Player {
 		char ss[50];
 		memset(ss, 0, sizeof(ss));
 		sprintf(ss, "next: ");
-		strcpy(screen[5] + 22, ss);
+		strcpy(screen[drawi] + drawj, ss);
 		for (int i = 0; i < 4; i ++) {
 			for (int j = 0; j < 4; j ++) {
 				if (bks[next][0][i][j]) {
-					screen[i + 5 + offi][j * 2 + 22 + offj] = '#';
+					screen[i + drawi + offi - 1][j * 2 + drawj + offj] = '#';
 				}
 			}
 		}
@@ -273,45 +274,41 @@ bool collide(int ci, int cj, int cb, int cr) {
 			}
 		}
 	}
-	/*
-	for (Player p : ps) {
-		for (int i = 0; i < 4; i ++) {
-			for (int j = 0; j < 4; j ++) {
-				for (int ii = 0; ii < 4; ii ++) {
-					for (int jj = 0; jj < 4; jj ++) {
-						if (ci + i == p.ci + i && cj + j == p.cj + j && bd(ci + i, cj + j)) {
-							if (bks[cb][cr][ci + i][cj + j] && bks[p.cb][p.cr][p.ci + ii][p.cj + jj]) {
-								return true;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	*/
 	return false;
 }
 int main() {
-	// ncurses stuff
-	initscr();
-	cbreak();
-	nodelay(stdscr, TRUE);
-	keypad(stdscr, TRUE);
-	noecho();
-	setup();
+
 	srand(time(0));
+	setup();
 	frame = 0;
 	pt = 0;
 	paused = false;
 	ps = vector<Player>(MP);
-	ps[0] = Player(0, 1, 'k', ';', 'l', 's', 'a', 'd');
-	ps[1] = Player(0, 5, ',', '/', '.', 'x', 'z', ' ');
+	ps[0] = Player(0, 3, ',', '/', '.', 'x', 'z', ' ', 23, 3);
+	puts("Instructions:");
+	int pc = 1;
+	for (Player p : ps) {
+		printf("player %d:\n"
+				"'%c' to go left, '%c' to go right\n"
+				"'%c' to rotate clockwise, '%c' to rotate counterclockwise\n"
+				"'%c' to soft drop, '%c' to hard drop\n\n",
+				pc, p.bleft, p.bright, p.brotr, p.brotl, p.bdown, p.bdrop);
+		pc ++;
+	}
+	puts("Press enter to continue...");
+	char hihi;
+	scanf("%c", &hihi);
 
+	initscr();
+	cbreak();
+	noecho();
+	nodelay(stdscr, TRUE);
+	keypad(stdscr, TRUE);
+			
 	while (true) {
 		usleep(1000);
 		memset(screen, ' ', sizeof(screen));
-		for (Player p : ps) {
+		for (Player &p : ps) {
 			p.draw();
 		}
 		for (int i = 0; i < MR; i ++) {
@@ -328,7 +325,7 @@ int main() {
 		}
 		char ss[50];
 		sprintf(ss, "points: %d", pt);
-		strcpy(screen[12] + 22, ss);
+		strcpy(screen[16] + 65, ss);
 
 		// loading drawing to ncurses
 		for (int i = 0; i < hei; i ++) {
@@ -340,7 +337,7 @@ int main() {
 		char inp = getch();
 		if (inp == 'p') paused = !paused;
 		if (paused) continue;
-		for (Player p : ps) {
+		for (Player &p : ps) {
 			p.act(inp);
 			p.down();
 		}
@@ -348,3 +345,5 @@ int main() {
 	}
 	return 0;
 }
+
+
