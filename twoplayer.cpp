@@ -3,7 +3,7 @@
 #include <ncurses.h>
 using namespace std; 
 
-const int MR = 22, MC = 10, MB = 7, MP = 2, hei = 30, wid = 40, offi = 1, offj = 1;
+const int MR = 22, MC = 30, MB = 7, MP = 2, hei = 30, wid = 80, offi = 1, offj = 1;
 int frame, pt;
 bool mb[MR][MC], paused;
 char screen[hei][wid];
