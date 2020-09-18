@@ -9,6 +9,8 @@ bool mb[MR][MC], paused;
 char screen[hei][wid];
 // list of rotation of pieces
 vector<vector<vector<int>>> bks[MB];
+class Player;
+vector<Player> ps;
 bool bd(int i, int j) {
 	return 0 <= i && i < MR && 0 <= j && j < MC;
 }
@@ -283,8 +285,7 @@ int main() {
 	frame = 0;
 	pt = 0;
 	paused = false;
-
-	Player ps[MP];
+	ps = vector<Player>(MP);
 	ps[0] = Player(0, 3, 'k', ';', 'l', 's', 'a', 'd');
 	ps[1] = Player(0, 3, ',', '/', '.', 'x', 'z', ' ');
 
