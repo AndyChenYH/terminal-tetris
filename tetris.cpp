@@ -26,8 +26,6 @@ bool collide(int ci, int cj, int cb, int cr) {
 	return false;
 }
 void setup() {
-	mb[MR - 2][0] = mb[MR - 1][0] = mb[MR - 1][1] = true;
-
 	bks[0] = {
 		{
 			{0, 0, 0, 0},
