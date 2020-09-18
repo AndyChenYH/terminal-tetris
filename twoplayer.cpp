@@ -277,7 +277,7 @@ bool collide(int ci, int cj, int cb, int cr) {
 	return false;
 }
 int main() {
-
+	COLOR_RED;
 	srand(time(0));
 	setup();
 	frame = 0;
