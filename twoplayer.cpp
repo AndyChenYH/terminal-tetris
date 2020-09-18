@@ -277,7 +277,6 @@ bool collide(int ci, int cj, int cb, int cr) {
 	return false;
 }
 int main() {
-	COLOR_RED;
 	srand(time(0));
 	setup();
 	frame = 0;
@@ -305,7 +304,7 @@ int main() {
 	noecho();
 	nodelay(stdscr, TRUE);
 	keypad(stdscr, TRUE);
-			
+
 	while (true) {
 		usleep(1000);
 		memset(screen, ' ', sizeof(screen));

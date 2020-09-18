@@ -16,6 +16,13 @@ bool bd(int i, int j) {
 	return 0 <= i && i < MR && 0 <= j && j < MC;
 }
 void setup() {
+	for (int i = 10; i < MR; i ++) {
+		for (int j = 0; j < MC; j ++) {
+			if (rand() % 6 < 5) {
+				mb[i][j] = true;
+			}
+		}
+	}
 	bks[0] = {
 		{
 			{0, 0, 0, 0},
@@ -187,6 +194,7 @@ class Player {
 				}
 			}
 		}
+
 	}
 	void act(char inp) {
 
@@ -277,7 +285,6 @@ bool collide(int ci, int cj, int cb, int cr) {
 	return false;
 }
 int main() {
-
 	srand(time(0));
 	setup();
 	frame = 0;
@@ -304,6 +311,7 @@ int main() {
 	noecho();
 	nodelay(stdscr, TRUE);
 	keypad(stdscr, TRUE);
+			
 			
 	while (true) {
 		usleep(1000);
