@@ -16,6 +16,15 @@ bool bd(int i, int j) {
 	return 0 <= i && i < MR && 0 <= j && j < MC;
 }
 void setup() {
+	/*
+	for (int i = 10; i < MR; i ++) {
+		for (int j = 0; j < MC; j ++) {
+			if (rand() % 6 < 5) {
+				mb[i][j] = true;
+			}
+		}
+	}
+	*/
 	bks[0] = {
 		{
 			{0, 0, 0, 0},
