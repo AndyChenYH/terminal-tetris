@@ -3,8 +3,9 @@
 #include <ncurses.h>
 using namespace std; 
 
-const int MR = 22, MC = 10, MB = 7, dropi = 0, dropj = 3;
-bool mb[MR][MC], screen[MR][MC + 20];
+const int MR = 22, MC = 50, MB = 7, dropi = 0, dropj = 3, hei = 30, wid = 150;
+bool mb[MR][MC];
+char screen[hei][wid];
 // list of rotation of pieces
 vector<vector<vector<int>>> bks[MB];
 bool bd(int i, int j) {
@@ -182,44 +183,49 @@ int main() {
 	while (true) {
 		usleep(1000);
 		clear();
-		memset(screen, false, sizeof(screen));
+		memset(screen, ' ', sizeof(screen));
 		for (int i = 0; i < 4; i ++) {
 			for (int j = 0; j < 4; j ++) {
-				if (bd(ci + i, cj + j)) {
-					screen[ci + i][cj + j] |= bks[cb][cr][i][j];
+				if (bks[cb][cr][i][j]) {
+					assert(bd(ci + i, cj + j));
+					screen[offi + ci + i][offj + cj * 2 + j * 2] = '#';
 				}
 			}
 		}
 		for (int i = 0; i < MR; i ++) {
 			for (int j = 0; j < MC; j ++) {
-				char cc;
-				if (mb[i][j] || screen[i][j]) cc = '#';
-				else cc = ' ';
-				mvaddch(i + offi, j * 2 + offj, cc);
-			}
-		}
-		mvaddstr(5, 22, "next: ");
-		for (int i = 0; i < 4; i ++) {
-			for (int j = 0; j < 4; j ++) {
-				if (bks[next][0][i][j]) {
-					mvaddch(i + 5 + offi, j * 2 + 22 + offj, '#');
-				}
+				if (mb[i][j]) screen[offi + i][offj + j * 2] = '#';
 			}
 		}
 		// drawing border
 		for (int i = 0; i < MR; i ++) {
-			mvaddch(i, 0, '.');
-			mvaddch(i, MC * 2, '.');
+			screen[i][0] = screen[i][MC * 2] = '.';
 		}
 		for (int j = 0; j < MC; j ++) {
-			mvaddch(0, j * 2, '.');
-			mvaddch(MR, j * 2, '.');
+			screen[0][j * 2] = screen[MR][j * 2] = '.';
 		}
-
-
 		char ss[50];
 		sprintf(ss, "points: %d", pt);
-		mvaddstr(12, 22, ss);
+		strcpy(screen[12] + 22, ss);
+
+		memset(ss, 0, sizeof(ss));
+		sprintf(ss, "next: ");
+		strcpy(screen[5] + 22, ss);
+		for (int i = 0; i < 4; i ++) {
+			for (int j = 0; j < 4; j ++) {
+				if (bks[next][0][i][j]) {
+					screen[i + 5 + offi][j * 2 + 22 + offj] = '#';
+				}
+			}
+		}
+
+		// loading drawing to ncurses
+		for (int i = 0; i < hei; i ++) {
+			for (int j = 0; j < wid; j ++) {
+				if (screen[i][j] != 0)
+					mvaddch(i, j, screen[i][j]);
+			}
+		}
 
 		char inp = getch();
 		if (inp == 'p') pause = !pause;
