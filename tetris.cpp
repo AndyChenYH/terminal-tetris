@@ -10,24 +10,10 @@ char screen[hei][wid];
 // list of rotation of pieces
 vector<vector<vector<int>>> bks[MB];
 class Player;
+bool collide(int ci, int cj, int cb, int cr);
 vector<Player> ps;
 bool bd(int i, int j) {
 	return 0 <= i && i < MR && 0 <= j && j < MC;
-}
-bool collide(int ci, int cj, int cb, int cr) {
-	for (int i = 0; i < 4; i ++) {
-		for (int j = 0; j < 4; j ++) {
-			if (bks[cb][cr][i][j]) {
-				if (!bd(ci + i, cj + j)) {
-					return true;
-				}
-				else if (mb[ci + i][cj + j]) {
-					return true;
-				}
-			}
-		}
-	}
-	return false;
 }
 void setup() {
 	bks[0] = {
@@ -184,7 +170,7 @@ class Player {
 		for (int i = 0; i < 4; i ++) {
 			for (int j = 0; j < 4; j ++) {
 				if (bks[cb][cr][i][j]) {
-					assert(bd(ci + i, cj + j));
+//					assert(bd(ci + i, cj + j));
 					screen[offi + ci + i][offj + cj * 2 + j * 2] = '#';
 				}
 			}
@@ -273,6 +259,39 @@ L1:;
 		}
 	}
 };
+
+bool collide(int ci, int cj, int cb, int cr) {
+	for (int i = 0; i < 4; i ++) {
+		for (int j = 0; j < 4; j ++) {
+			if (bks[cb][cr][i][j]) {
+				if (!bd(ci + i, cj + j)) {
+					return true;
+				}
+				else if (mb[ci + i][cj + j]) {
+					return true;
+				}
+			}
+		}
+	}
+	/*
+	for (Player p : ps) {
+		for (int i = 0; i < 4; i ++) {
+			for (int j = 0; j < 4; j ++) {
+				for (int ii = 0; ii < 4; ii ++) {
+					for (int jj = 0; jj < 4; jj ++) {
+						if (ci + i == p.ci + i && cj + j == p.cj + j && bd(ci + i, cj + j)) {
+							if (bks[cb][cr][ci + i][cj + j] && bks[p.cb][p.cr][p.ci + ii][p.cj + jj]) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	*/
+	return false;
+}
 int main() {
 	// ncurses stuff
 	initscr();
@@ -286,12 +305,11 @@ int main() {
 	pt = 0;
 	paused = false;
 	ps = vector<Player>(MP);
-	ps[0] = Player(0, 3, 'k', ';', 'l', 's', 'a', 'd');
-	ps[1] = Player(0, 3, ',', '/', '.', 'x', 'z', ' ');
+	ps[0] = Player(0, 1, 'k', ';', 'l', 's', 'a', 'd');
+	ps[1] = Player(0, 5, ',', '/', '.', 'x', 'z', ' ');
 
 	while (true) {
 		usleep(1000);
-		clear();
 		memset(screen, ' ', sizeof(screen));
 		ps[0].draw();
 		ps[1].draw();
@@ -314,8 +332,7 @@ int main() {
 		// loading drawing to ncurses
 		for (int i = 0; i < hei; i ++) {
 			for (int j = 0; j < wid; j ++) {
-				if (screen[i][j] != 0)
-					mvaddch(i, j, screen[i][j]);
+				if (screen[i][j] != 0) mvaddch(i, j, screen[i][j]);
 			}
 		}
 
@@ -326,7 +343,6 @@ int main() {
 		ps[1].act(inp);
 		ps[0].down();
 		ps[1].down();
-		printf("hello\n");
 		frame ++;
 	}
 	return 0;
