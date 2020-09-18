@@ -4,7 +4,7 @@
 using namespace std; 
 
 const int MR = 22, MC = 30, MB = 7, MP = 2, hei = 30, wid = 80, offi = 1, offj = 1;
-int frame, pt;
+int pt;
 bool mb[MR][MC], paused;
 char screen[hei][wid];
 // list of rotation of pieces
@@ -156,7 +156,7 @@ void clear(int li) {
 }
 class Player {
 	public:
-	int ci, cj, cb, cr, next, dropi = 0, dropj = 3;
+	int ci, cj, cb, cr, next, dropi = 0, dropj = 3, frame = 0;
 	char bleft, bright, bdown, brotl, brotr, bdrop;
 	Player() {}
 	Player(int dropi, int dropj, int bleft, int bright, int bdown, int brotr, int brotl, int bdrop) {
@@ -170,7 +170,6 @@ class Player {
 		for (int i = 0; i < 4; i ++) {
 			for (int j = 0; j < 4; j ++) {
 				if (bks[cb][cr][i][j]) {
-//					assert(bd(ci + i, cj + j));
 					screen[offi + ci + i][offj + cj * 2 + j * 2] = '#';
 				}
 			}
@@ -301,13 +300,11 @@ int main() {
 	noecho();
 	setup();
 	srand(time(0));
-	frame = 0;
 	pt = 0;
 	paused = false;
 	ps = vector<Player>(MP);
 	ps[0] = Player(0, 1, 'k', ';', 'l', 's', 'a', 'd');
 	ps[1] = Player(0, 5, ',', '/', '.', 'x', 'z', ' ');
-
 	while (true) {
 		usleep(1000);
 		memset(screen, ' ', sizeof(screen));
@@ -344,7 +341,9 @@ int main() {
 			p.act(inp);
 			p.down();
 		}
-		frame ++;
+		for (Player p : ps) {
+			p.frame ++;
+		}
 	}
 	return 0;
 }
