@@ -3,8 +3,8 @@
 #include <ncurses.h>
 using namespace std; 
 
-const int MR = 22, MC = 30, MB = 7, MP = 1, hei = 30, wid = 80, offi = 1, offj = 1;
-int frame, pt;
+const int MR = 22, MC = 20, MB = 7, MP = 2, hei = 30, wid = 80, offi = 1, offj = 1;
+int frame, pt, color[hei][wid];
 bool mb[MR][MC], paused;
 char screen[hei][wid];
 // list of rotation of pieces
@@ -156,14 +156,15 @@ void clear(int li) {
 }
 class Player {
 	public:
-	int ci, cj, cb, cr, next, dropi = 0, dropj = 3, drawi, drawj;
+	int ci, cj, cb, cr, next, dropi = 0, dropj = 3, drawi, drawj, cc;
 	char bleft, bright, bdown, brotl, brotr, bdrop;
 	Player() {}
-	Player(int dropi, int dropj, int bleft, int bright, int bdown, int brotr, int brotl, int bdrop, int drawi, int drawj) {
+	Player(int dropi, int dropj, int bleft, int bright, int bdown, int brotr, int brotl, int bdrop, int drawi, int drawj, int cc) {
 		this->dropi = dropi, this->dropj = dropj;
 		this->bleft = bleft, this->bright = bright, this->bdown = bdown;
 		this->brotl = brotl, this->brotr = brotr, this->bdrop = bdrop;
 		this->drawi = drawi, this->drawj = drawj;
+		this->cc = cc;
 		ci = dropi, cj = dropj, cb = rand() % MB, cr = 0;
 		next = rand() % MB;
 	}
@@ -173,6 +174,7 @@ class Player {
 				if (bks[cb][cr][i][j]) {
 //					assert(bd(ci + i, cj + j));
 					screen[offi + ci + i][offj + cj * 2 + j * 2] = '#';
+					color[offi + ci + i][offj + cj * 2 + j * 2] = cc;
 				}
 			}
 		}
@@ -184,9 +186,11 @@ class Player {
 			for (int j = 0; j < 4; j ++) {
 				if (bks[next][0][i][j]) {
 					screen[i + drawi + offi - 1][j * 2 + drawj + offj] = '#';
+					color[i + drawi + offi - 1][j * 2 + drawj + offj] = cc;
 				}
 			}
 		}
+
 	}
 	void act(char inp) {
 
@@ -283,8 +287,10 @@ int main() {
 	pt = 0;
 	paused = false;
 	ps = vector<Player>(MP);
-	ps[0] = Player(0, 14, ',', '/', '.', 'x', 'z', ' ', 23, 28);
-//	ps[1] = Player(0, 8, 'k', ';', 'l', 's', 'a', 'd', 23, 18);
+	// keys in order: left, right, down, rotate right, rotate left, drop
+	// change the characters accordingly
+	ps[0] = Player(0, 5, ',', '/', '.', 'x', 'z', ' ', 23, 10, 2);
+	ps[1] = Player(0, 15, 'a', 'd', 's', 'w', 'r', 'f', 23, 30, 3);
 	puts("Instructions:");
 	int pc = 1;
 	for (Player p : ps) {
@@ -304,13 +310,20 @@ int main() {
 	noecho();
 	nodelay(stdscr, TRUE);
 	keypad(stdscr, TRUE);
-
+	start_color();
+	init_pair(1, COLOR_WHITE, COLOR_BLACK);
+	init_pair(2, COLOR_CYAN, COLOR_BLACK);
+	init_pair(3, COLOR_YELLOW, COLOR_BLACK);
 	while (true) {
 		usleep(1000);
 		memset(screen, ' ', sizeof(screen));
+		for (int i = 0; i < hei; i ++) {
+			fill(color[i], color[i] + wid, 1);
+		}
 		for (Player &p : ps) {
 			p.draw();
 		}
+
 		for (int i = 0; i < MR; i ++) {
 			for (int j = 0; j < MC; j ++) {
 				if (mb[i][j]) screen[offi + i][offj + j * 2] = '#';
@@ -325,14 +338,19 @@ int main() {
 		}
 		char ss[50];
 		sprintf(ss, "points: %d", pt);
-		strcpy(screen[16] + 65, ss);
+		strcpy(screen[16] + 45, ss);
 
 		// loading drawing to ncurses
 		for (int i = 0; i < hei; i ++) {
 			for (int j = 0; j < wid; j ++) {
-				if (screen[i][j] != 0) mvaddch(i, j, screen[i][j]);
+				if (screen[i][j] != 0) {
+					attron(COLOR_PAIR(color[i][j]));
+					mvaddch(i, j, screen[i][j]);
+					attroff(COLOR_PAIR(color[i][j]));
+				}
 			}
 		}
+
 
 		char inp = getch();
 		if (inp == 'p') paused = !paused;
@@ -342,6 +360,7 @@ int main() {
 			p.down();
 		}
 		frame ++;
+
 	}
 	return 0;
 }
