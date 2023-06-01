@@ -1,5 +1,5 @@
 # terminal-tetris
-terminal tetris for cool hackermen like myself
+terminal tetris for those who prefer a text GUI
 
 
 ## controls:
